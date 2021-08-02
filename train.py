@@ -22,6 +22,8 @@ from tensorboard_logger import configure, log_value
 parser = argparse.ArgumentParser(description='PyTorch WideResNet Training')
 parser.add_argument('--dataset', default='cifar10', type=str,
                     help='dataset (cifar10 [default] or cifar100)')
+parser.add_argumenr('--data-root', '--dataroot', '--dataRoot', dest='data_root',
+                    type=str, default='./data/cifar10', help='dataset directory')
 parser.add_argument('--epochs', default=200, type=int,
                     help='number of total epochs to run')
 parser.add_argument('--start-epoch', default=0, type=int,
@@ -87,11 +89,11 @@ def main():
     kwargs = {'num_workers': 1, 'pin_memory': True}
     assert(args.dataset == 'cifar10' or args.dataset == 'cifar100')
     train_loader = torch.utils.data.DataLoader(
-        datasets.__dict__[args.dataset.upper()]('../data', train=True, download=True,
+        datasets.__dict__[args.dataset.upper()](args.data_root, train=True, download=True,
                          transform=transform_train),
         batch_size=args.batch_size, shuffle=True, **kwargs)
     val_loader = torch.utils.data.DataLoader(
-        datasets.__dict__[args.dataset.upper()]('../data', train=False, transform=transform_test),
+        datasets.__dict__[args.dataset.upper()](args.data_root, train=False, transform=transform_test),
         batch_size=args.batch_size, shuffle=True, **kwargs)
 
     # create model
