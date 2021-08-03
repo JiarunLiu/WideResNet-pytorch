@@ -22,7 +22,7 @@ from tensorboard_logger import configure, log_value
 parser = argparse.ArgumentParser(description='PyTorch WideResNet Training')
 parser.add_argument('--dataset', default='cifar10', type=str,
                     help='dataset (cifar10 [default] or cifar100)')
-parser.add_argumenr('--data-root', '--dataroot', '--dataRoot', dest='data_root',
+parser.add_argument('--data-root', '--dataroot', '--dataRoot', dest='data_root',
                     type=str, default='./data/cifar10', help='dataset directory')
 parser.add_argument('--epochs', default=200, type=int,
                     help='number of total epochs to run')
@@ -52,6 +52,8 @@ parser.add_argument('--name', default='WideResNet-28-10', type=str,
                     help='name of experiment')
 parser.add_argument('--tensorboard',
                     help='Log progress to TensorBoard', action='store_true')
+parser.add_argument('--cudnn', default=False,
+                    help='using cudnn (default: False)', action='store_true')
 parser.set_defaults(augment=True)
 
 best_prec1 = 0
@@ -121,8 +123,9 @@ def main():
                   .format(args.resume, checkpoint['epoch']))
         else:
             print("=> no checkpoint found at '{}'".format(args.resume))
-
-    cudnn.benchmark = True
+    
+    if args.cudnn:
+        cudnn.benchmark = True
 
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().cuda()
